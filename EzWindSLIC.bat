@@ -48,7 +48,7 @@ shutdown -r -f -t 00
 exit
 )
 FOR /F "tokens=2* skip=2" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductName"') do set os="%%b"
-echo Detected OS: %os%
+echo Detected OS: %%b
 echo Current activation status:
 cscript //nologo %windir%\system32\slmgr.vbs -dlv
 if /i %os% EQU "Windows Vista Home Basic" set key=2W7FD-9DWCB-Q9CM8-KTDKK-8QXTR
@@ -64,6 +64,7 @@ if /i %os% EQU "Windows 7 Professional" set key=YKHFT-KW986-GK4PY-FDWYH-7TP9F
 if /i %os% EQU "Windows 7 Professional E" set key=P42PH-HYD6B-Y3DHY-B79JH-CT8YK
 if /i %os% EQU "Windows 7 Ultimate" set key=FJGCP-4DFJD-GJY49-VJBQ7-HYRR2
 if /i %os% EQU "Windows 7 Ultimate E" set key=278MV-DKMGJ-F3P9F-TD7Y3-W6G3M
+if /i "%~1" EQU "-custom" set /p key="Enter custom key: "
 if not defined key (
 echo ERROR
 echo Unsupported OS!
