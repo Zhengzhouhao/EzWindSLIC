@@ -6,3 +6,9 @@ Supported products: Windows Vista Home Basic, Windows Vista Home Basic N, Window
 
 If you get an error running the activator then:
 Make sure that you have a UEFI motherboard and are NOT booted into legacy mode. Try using Daz' Windows Loader. Your OS may not be supported.
+
+To uninstall this activator:
+Run the batch file again. When the script prompts you press any key to uninstall and reboot when prompted.
+
+To use a custom product key:
+Open an admin command prompt, and launch the script with a '-custom' switch. WARNING: MAKE SURE THE CUSTOM PRODUCT KEY YOU TYPE IS EXACTLY 29 CHARACTERS AND DOES NOT HAVE SPACES! If you do not heed this warning, your computer WILL NOT BOOT!
