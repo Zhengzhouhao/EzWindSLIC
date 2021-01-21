@@ -1,4 +1,5 @@
 @echo off
+color 1f
 :init
 setlocal DisableDelayedExpansion
 set "batchPath=%~0"
@@ -23,6 +24,7 @@ setlocal & pushd .
 cd /d %~dp0
 if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
 color 1f
+title EzWindSLIC by Exe Csrss
 echo EzWindSLIC by Exe Csrss
 mountvol V: /s >nul 2>&1
 if exist V:\EFI\Microsoft\Boot\bootmgfw.efi (
@@ -47,8 +49,9 @@ pause >nul
 shutdown -r -f -t 00
 exit
 )
-FOR /F "tokens=2* skip=2" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductName"') do set os="%%b"
-echo Detected OS: %%b
+FOR /F "tokens=2* skip=2" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductName"') do set truos=%%b
+echo Detected OS: %truos%
+set os="%truos%"
 echo Current activation status:
 cscript //nologo %windir%\system32\slmgr.vbs -dlv
 if /i %os% EQU "Windows Vista Home Basic" set key=2W7FD-9DWCB-Q9CM8-KTDKK-8QXTR
@@ -64,12 +67,18 @@ if /i %os% EQU "Windows 7 Professional" set key=YKHFT-KW986-GK4PY-FDWYH-7TP9F
 if /i %os% EQU "Windows 7 Professional E" set key=P42PH-HYD6B-Y3DHY-B79JH-CT8YK
 if /i %os% EQU "Windows 7 Ultimate" set key=FJGCP-4DFJD-GJY49-VJBQ7-HYRR2
 if /i %os% EQU "Windows 7 Ultimate E" set key=278MV-DKMGJ-F3P9F-TD7Y3-W6G3M
-if /i "%~1" EQU "-custom" set /p key="Enter custom key: "
+if /i %os% EQU "Windows Server 2008 Standard" set key=223PV-8KCX6-F9KJX-3W2R7-BB2FH
+if /i %os% EQU "Windows Server 2008 Enterprise" set key=26Y2H-YTJY6-CYD4F-DMB6V-KXFCQ
+if /i %os% EQU "Windows Server 2008 R2 Standard" set key=D7TCH-6P8JP-KRG4P-VJKYY-P9GFF
+if /i %os% EQU "Windows Server 2008 R2 Datacenter" set key=26FXG-KYC7Q-XG29P-T2HFQ-KPF96
+if /i %os% EQU "Windows Server 2008 R2 Enterprise" set key=BKCJJ-J6G9Y-4P7YF-8D4J7-7TCWD
+if /i "%~1" EQU "-custom" set /p key="Enter your custom product key: "
 if not defined key (
 echo ERROR
 echo Unsupported OS!
 echo Press any key to exit...
 pause >nul
+mountvol V: /d >nul 2>&1
 exit
 )
 echo Uninstalling current product key...
@@ -117,4 +126,5 @@ del /f /q %temp%\Acer.XRM-MS >nul 2>&1
 del /f /q %temp%\key.txt >nul 2>&1
 echo A reboot is required to finish activation. Press any key to reboot...
 pause >nul
-shutdown -r -f -t 00
+mountvol V: /d >nul 2>&1
+shutdown -r -f -t 00 >nul 2>&1
