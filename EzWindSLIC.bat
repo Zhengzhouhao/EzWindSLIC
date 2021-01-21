@@ -54,12 +54,12 @@ echo Detected OS: %truos%
 set os="%truos%"
 echo Current activation status:
 cscript //nologo %windir%\system32\slmgr.vbs -dlv
-if /i %os% EQU "Windows Vista Home Basic" set key=2W7FD-9DWCB-Q9CM8-KTDKK-8QXTR
-if /i %os% EQU "Windows Vista Home Basic N" set key=22TC9-RDMDD-VXMXD-2XM2Y-DT6FX
-if /i %os% EQU "Windows Vista Home Premium" set key=2TYBW-XKCQM-XY9X3-JDXYP-6CJ97
-if /i %os% EQU "Windows Vista Business" set key=2TJTJ-C72D7-7BCYH-FV3HT-JGD4F
-if /i %os% EQU "Windows Vista Business N" set key=2434H-HFRM7-BHGD4-W9TTD-RJVCH
-if /i %os% EQU "Windows Vista Ultimate" set key=3YDB8-YY3P4-G7FCW-GJMPG-VK48C
+if /i %os% EQU "Windows Vista (TM) Home Basic" set key=2W7FD-9DWCB-Q9CM8-KTDKK-8QXTR
+if /i %os% EQU "Windows Vista (TM) Home Basic N" set key=22TC9-RDMDD-VXMXD-2XM2Y-DT6FX
+if /i %os% EQU "Windows Vista (TM) Home Premium" set key=2TYBW-XKCQM-XY9X3-JDXYP-6CJ97
+if /i %os% EQU "Windows Vista (TM) Business" set key=2TJTJ-C72D7-7BCYH-FV3HT-JGD4F
+if /i %os% EQU "Windows Vista (TM) Business N" set key=2434H-HFRM7-BHGD4-W9TTD-RJVCH
+if /i %os% EQU "Windows Vista (TM) Ultimate" set key=3YDB8-YY3P4-G7FCW-GJMPG-VK48C
 if /i %os% EQU "Windows 7 Home Basic" set key=MB4HF-2Q8V3-W88WR-K7287-2H4CP
 if /i %os% EQU "Windows 7 Home Premium" set key=VQB3X-Q3KP8-WJ2H8-R6B6D-7QJB7
 if /i %os% EQU "Windows 7 Home Premium E" set key=TD77M-HH38J-FBCB8-8QX7Y-P2QH3
@@ -67,8 +67,8 @@ if /i %os% EQU "Windows 7 Professional" set key=YKHFT-KW986-GK4PY-FDWYH-7TP9F
 if /i %os% EQU "Windows 7 Professional E" set key=P42PH-HYD6B-Y3DHY-B79JH-CT8YK
 if /i %os% EQU "Windows 7 Ultimate" set key=FJGCP-4DFJD-GJY49-VJBQ7-HYRR2
 if /i %os% EQU "Windows 7 Ultimate E" set key=278MV-DKMGJ-F3P9F-TD7Y3-W6G3M
-if /i %os% EQU "Windows Server 2008 Standard" set key=223PV-8KCX6-F9KJX-3W2R7-BB2FH
-if /i %os% EQU "Windows Server 2008 Enterprise" set key=26Y2H-YTJY6-CYD4F-DMB6V-KXFCQ
+if /i %os% EQU "Windows Server (R) 2008 Standard" set key=223PV-8KCX6-F9KJX-3W2R7-BB2FH
+if /i %os% EQU "Windows Server (R) 2008 Enterprise" set key=26Y2H-YTJY6-CYD4F-DMB6V-KXFCQ
 if /i %os% EQU "Windows Server 2008 R2 Standard" set key=D7TCH-6P8JP-KRG4P-VJKYY-P9GFF
 if /i %os% EQU "Windows Server 2008 R2 Datacenter" set key=26FXG-KYC7Q-XG29P-T2HFQ-KPF96
 if /i %os% EQU "Windows Server 2008 R2 Enterprise" set key=BKCJJ-J6G9Y-4P7YF-8D4J7-7TCWD
