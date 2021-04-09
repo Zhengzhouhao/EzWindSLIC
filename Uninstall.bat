@@ -56,9 +56,14 @@ echo Your OS version is not supported. Please use alternative activation exploit
 %_pakerr%
 )
 :: Detect OS type
-for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "InstallationType"') do set ostype=%%H
+(for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "InstallationType"') do set ostype=%%H) %_nul%
 ::Detect OS edition
 for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "EditionID"') do set osedition=%%H
+:: NT 6.0 doesn't have InstallationType registry value
+if not defined ostype (
+echo %osedition% | find "Server" %_nul% && set ostype=Server
+if not defined ostype set ostype=Client
+)
 echo Mounting EFI System Partition to: %_ltr%...
 mountvol %_ltr% /s
 if not exist %_ltr%\EFI (
