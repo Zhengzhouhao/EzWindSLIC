@@ -509,6 +509,16 @@ Lenovo:6.1:Server:ServerHomePremium:2M74M-6DJHT-Y49MG-22FGH-B6XFP
 MSI:6.1:Server:ServerHomePremium:2M74M-6DJHT-Y49MG-22FGH-B6XFP
 Sony:6.1:Server:ServerHomePremium:2M74M-6DJHT-Y49MG-22FGH-B6XFP
 Toshiba:6.1:Server:ServerHomePremium:2M74M-6DJHT-Y49MG-22FGH-B6XFP
+Acer:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Alienware:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Asus:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Dell:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Gigabyte:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+HP:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Lenovo:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+MSI:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Sony:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
+Toshiba:6.1:Server:ServerSBSStandard:2QWT9-FMJ8G-99KPY-4MRQJ-XXX3W
 ) do (
 for /f "tokens=1-5 delims=:" %%G in ("%%#") do if /i %slic% EQU %%G if /i %osver% EQU %%H if /i %ostype% EQU %%I if /i %osedition% EQU %%J set "key=%%K"
 )
@@ -520,11 +530,10 @@ echo Please use alternative activation exploits.
 %_pakerr%
 )
 echo Copying files...
-(<nul (set /p _temp_key=%key%)) > "%temp%\key.txt"
 md %_ltr%\EFI\WindSLIC %_nul%
 copy /y "%~dp0bin\WindSLIC.efi" %_ltr%\EFI\WindSLIC %_nul%
 copy /y "%~dp0bin\%slic%\slic.BIN" %_ltr%\EFI\WindSLIC %_nul%
-copy /y "%temp%\key.txt" %_ltr%\EFI\WindSLIC %_nul%
+copy /y "%~dp0bin\key.txt" %_ltr%\EFI\WindSLIC %_nul%
 echo Installing certificate...
 %_slm% -ilc "%~dp0bin\%slic%\%slic%.XRM-MS"
 echo Installing product key...
@@ -532,8 +541,6 @@ echo Installing product key...
 echo Installing bootloader...
 %_bcd% /store "%_ltr%\EFI\Microsoft\Boot\BCD" /set {bootmgr} PATH \EFI\WindSLIC\WindSLIC.efi %_nul%
 %_bcd% /set {bootmgr} PATH \EFI\WindSLIC\WindSLIC.efi
-echo Cleaning up...
-del "%temp%\key.txt" %_nul%
 echo A reboot is required to finish activation.
 echo Press any key to reboot...
 pause >nul
