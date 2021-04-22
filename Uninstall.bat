@@ -24,8 +24,9 @@ exit /B
 setlocal & pushd .
 cd /d %~dp0
 if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
-title EzWindSLIC by Exe Csrss
-echo EzWindSLIC by Exe Csrss
+set "uiver=2.2 Release Candidate 1"
+title EzWindSLIC %uiver% by Exe Csrss
+echo EzWindSLIC %uiver% by Exe Csrss
 setlocal EnableDelayedExpansion
 :: Declare some variables for convenience
 set "_csc=%systemroot%\System32\cscript.exe //nologo"
@@ -55,8 +56,11 @@ if %osver% NEQ 6.0 if %osver% NEQ 6.1 (
 echo Your OS version is not supported. Please use alternative activation exploits.
 %_pakerr%
 )
-:: Detect OS type
-(for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "InstallationType"') do set ostype=%%H) %_nul%
+:: Detect OS type by @abbodi1406
+if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
+set ostype=Server
+)
+if not defined ostype set ostype=Client
 ::Detect OS edition
 for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "EditionID"') do set osedition=%%H
 :: NT 6.0 doesn't have InstallationType registry value

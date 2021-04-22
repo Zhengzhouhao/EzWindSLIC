@@ -24,9 +24,15 @@ exit /B
 setlocal & pushd .
 cd /d %~dp0
 if '%1'=='ELEV' (del "%vbsGetPrivileges%" 1>nul 2>nul  &  shift /1)
-title EzWindSLIC by Exe Csrss
-echo EzWindSLIC by Exe Csrss
+set "uiver=2.2"
+title EzWindSLIC %uiver% by Exe Csrss
+echo EzWindSLIC %uiver% by Exe Csrss
 setlocal EnableDelayedExpansion
+:: Detect switches
+for /f "tokens=1-2 delims=-/ " %%G in ("%~1 %~2") do (
+set "%%G=1" 2>nul
+set "%%H=1" 2>nul
+)
 :: Declare some variables for convenience
 set "_csc=%systemroot%\System32\cscript.exe //nologo"
 set "_slm=%_csc% %systemroot%\System32\slmgr.vbs"
@@ -37,10 +43,19 @@ set "_pak=echo Press any key to exit... & pause %_nul% & cd /d %systemroot% & mo
 set "_pakerr=echo Press any key to exit... & pause %_nul% & cd /d %systemroot% & mountvol %_ltr% /d %_nul% & exit /b 1"
 set "_wmi=%systemroot%\System32\wbem\wmic.exe"
 set "_reb=%systemroot%\System32\shutdown.exe -r -t 00 %_nul%"
+if defined silent (
+set "_pak=cd /d %systemroot% & mountvol %_ltr% /d %_nul% & exit /b 0"
+set "_pakerr=cd /d %systemroot% & mountvol %_ltr% /d %_nul% & exit /b 1"
+set "_prof=Acer"
+)
+if defined norestart (
+set "_reb=echo You selected no restart option. Windows will not be rebooted"
+)
 :: Some variables to control this script
 REM CustomKey=XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
 REM CustomLtr=X:
 REM UseCustomSLICandCert=0
+REM _prof=Asus
 
 
 
@@ -99,7 +114,9 @@ echo A free drive letter is required to mount the EFI System Partition.
 color 2f
 echo Windows is already permanently activated.
 echo Press any key to install WindSLIC...
+if defined silent exit /b 0
 pause >nul
+color 1f
 )
 :: Detect OS version
 for /f "tokens=4,5 delims=[]. " %%G in ('ver') do set osver=%%G.%%H
@@ -108,47 +125,22 @@ if %osver% NEQ 6.0 if %osver% NEQ 6.1 (
 echo Your OS version is not supported. Please use alternative activation exploits.
 %_pakerr%
 )
-:: Detect OS type
-(for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "InstallationType"') do set ostype=%%H) %_nul%
+:: Detect OS type by @abbodi1406
+if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
+set ostype=Server
+)
+if not defined ostype set ostype=Client
+:: Check if OS is evaluation by @abbodi1406
+if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-*EvalEdition~*.mum" (
+%_eline%
+echo Detect OS is an evaluation version.
+echo Either convert it to full OS or install full OS.
+%_pakerr%
+)
 :: Detect OS edition
 for /f "tokens=2* skip=2" %%G in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "EditionID"') do set osedition=%%H
-:: NT 6.0 doesn't have InstallationType registry value
-if not defined ostype (
-echo %osedition% | find "Server" %_nul% && set ostype=Server
-if not defined ostype set ostype=Client
-)
 :: Detect OS name
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU Starter set "fullosname=Windows Vista Starter"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU HomeBasic set "fullosname=Windows Vista Home Basic"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU HomeBasicN set "fullosname=Windows Vista Home Basic N"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU HomePremium set "fullosname=Windows Vista Home Premium"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU Business set "fullosname=Windows Vista Business"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU BusinessN set "fullosname=Windows Vista Business N"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Client if /i %osedition% EQU Ultimate set "fullosname=Windows Vista Ultimate"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Server if /i %osedition% EQU ServerSBSPrime set "fullosname=Windows Server 2008 Foundation"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Server if /i %osedition% EQU ServerStandard set "fullosname=Windows Server 2008 Standard"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Server if /i %osedition% EQU ServerEnterprise set "fullosname=Windows Server 2008 Enterprise"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Server if /i %osedition% EQU ServerEnterpriseV set "fullosname=Windows Server 2008 Enterprise without Hyper-V"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Server if /i %osedition% EQU ServerSBSStandard set "fullosname=Windows Small Business Server 2008 Standard"
-if /i %osver% EQU 6.0 if /i %ostype% EQU Server if /i %osedition% EQU ServerStorageStandard set "fullosname=Windows Storage Server 2008 Standard"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU Starter set "fullosname=Windows 7 Starter"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU StarterE set "fullosname=Windows 7 Starter E"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU HomeBasic set "fullosname=Windows 7 Home Basic"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU HomePremium set "fullosname=Windows 7 Home Premium"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU HomePremiumE set "fullosname=Windows 7 Home Premium E"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU Professional set "fullosname=Windows 7 Professional"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU ProfessionalE set "fullosname=Windows 7 Professional E"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU Ultimate set "fullosname=Windows 7 Ultimate"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Client if /i %osedition% EQU UltimateE set "fullosname=Windows 7 Ultimate E"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerWinFoundation set "fullosname=Windows Server 2008 R2 Foundation"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerWeb set "fullosname=Windows Server 2008 R2 Web"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerStandard set "fullosname=Windows Server 2008 R2 Standard"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerEnterprise set "fullosname=Windows Server 2008 R2 Enterprise"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerDatacenter set "fullosname=Windows Server 2008 R2 Datacenter"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerHomeStandard set "fullosname=Windows Storage Server 2008 R2 Essentials"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerSolution set "fullosname=Windows Small Business Server 2011 Essentials"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerSBSStandard set "fullosname=Windows Small Business Server 2011 Standard"
-if /i %osver% EQU 6.1 if /i %ostype% EQU Server if /i %osedition% EQU ServerHomePremium set "fullosname=Windows Home Server 2011"
+for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName 2^>nul') do set "fullosname=%%b"
 echo OS version: %osver%
 echo OS type: %ostype%
 echo OS edition: %osedition%
@@ -170,6 +162,10 @@ echo WindSLIC is already installed.
 echo WindSLIC not currently installed.
 if defined UseCustomSLICandCert (
 set slic=custom
+goto skipslicprompt
+)
+if defined _prof (
+set slic=%_prof%
 goto skipslicprompt
 )
 echo [1] Acer
@@ -196,16 +192,14 @@ if %prof% EQU 9 set slic=Sony
 if %prof% EQU 10 set slic=Toshiba
 :skipslicprompt
 if not exist "%~dp0bin\%slic%\slic.BIN" (
+%_eline%
 echo slic.BIN doesn't exist, make sure all files are intact, and run this again.
-echo Press any key to exit...
-pause >nul
-exit
+%_pakerr%
 )
 if not exist "%~dp0bin\%slic%\%slic%.XRM-MS" (
+%_eline%
 echo Certificate doesn't exist, make sure all files are intact, and run this again.
-echo Press any key to exit...
-pause >nul
-exit
+%_pakerr%
 )
 :: Decide product key to be installed (inspiration from @Windows_Addict's MAS, keys by @Freestyler)
 for %%# in (
@@ -542,8 +536,8 @@ echo Installing bootloader...
 %_bcd% /store "%_ltr%\EFI\Microsoft\Boot\BCD" /set {bootmgr} PATH \EFI\WindSLIC\WindSLIC.efi %_nul%
 %_bcd% /set {bootmgr} PATH \EFI\WindSLIC\WindSLIC.efi
 echo A reboot is required to finish activation.
-echo Press any key to reboot...
-pause >nul
+if not defined norestart echo Press any key to reboot...
+if not defined silent pause >nul
 cd /d %systemroot%
 mountvol %_ltr% /d
 %_reb%
