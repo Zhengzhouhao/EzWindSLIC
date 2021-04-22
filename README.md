@@ -13,3 +13,5 @@ Open install.bat in a text editor and uncomment the line which sets the CustomKe
 
 To use custom SLIC and cert:
 Open install.bat in a text editor and uncomment the line which sets the UseCustomSLICAndCert variable. Drop the SLIC and Cert as slic.BIN and Custom.XRM-MS in \bin\Custom.
+
+You can use -silent and -norestart switches to not make the script ask for user input and reboot the system
